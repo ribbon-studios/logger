@@ -51,12 +51,14 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Coverage
-        run: bun run test:coverage
+        run: bun test --coverage
 
-      - name: Coveralls
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+      # TODO: Enable once LCOV is supported
+      # https://github.com/oven-sh/bun/issues/4015
+      # - name: Coveralls
+      #   uses: coverallsapp/github-action@master
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
 
   build:
     name: Build
