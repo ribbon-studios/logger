@@ -95,7 +95,7 @@ jobs:
           path: dist
 
       - name: Deploy
-        run: bunx semantic-release
+        run: bunx semantic-release@^22
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
