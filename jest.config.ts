@@ -1,10 +1,9 @@
-import type { JestConfigWithTsJest } from 'ts-jest';
-import { defaults as tsjPreset } from 'ts-jest/presets';
+import type { Config } from 'jest';
 
-const jestConfig: JestConfigWithTsJest = {
+const jestConfig: Config = {
   testEnvironment: 'node',
   transform: {
-    ...tsjPreset.transform,
+    '^.+\\.(t|j)sx?$': '@swc/jest',
   },
 
   collectCoverageFrom: ['<rootDir>/src/**/*'],

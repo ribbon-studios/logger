@@ -13,7 +13,7 @@ A simple logger for all Rainbow Cafe Apps & Libraries
 
 ### Usage
 
-```tsx
+```ts
 import { Logger, LogLevel } from '@rain-cafe/logger';
 
 Logger.setLevel(LogLevel.INFO); // This is the default LogLevel

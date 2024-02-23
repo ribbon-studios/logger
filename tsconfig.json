@@ -1,8 +1,4 @@
 {
-  "ts-node": {
-    "files": true,
-    "require": ["tsconfig-paths/register"]
-  },
   "compilerOptions": {
     "esModuleInterop": true,
     "resolveJsonModule": true,
