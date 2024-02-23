@@ -22,6 +22,7 @@
     "chalk": "^3"
   },
   "devDependencies": {
+    "@jest/types": "^29.6.1",
     "@types/jest": "^29.5.3",
     "@types/node": "^18",
     "@typescript-eslint/eslint-plugin": "^6.1.0",

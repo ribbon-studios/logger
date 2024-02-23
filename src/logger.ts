@@ -1,5 +1,5 @@
 import { Chalk, red, yellow, cyan, magenta } from 'chalk';
-import { stringify } from './utils/stringify';
+import { sanitizeMessages } from './utils/messages';
 
 export enum LogLevel {
   ERROR,
@@ -42,15 +42,11 @@ export class Logger {
 
     const chalk = LEVEL_CHALK[level];
 
-    const messages = rawMessages.map((rawMessage) => {
-      return typeof rawMessage === 'object' ? stringify(rawMessage) : rawMessage;
-    });
-
-    console.log(
-      chalk(
-        `${`[${LogLevel[level].toLowerCase()}]:`.padEnd(MAX_LENGTH, ' ')} ${messages.join(' ')}`
-      )
+    const messages = sanitizeMessages(rawMessages).map((message) =>
+      message instanceof Error ? message : chalk(message)
     );
+
+    console.log(chalk(`[${LogLevel[level].toLowerCase()}]:`).padEnd(MAX_LENGTH, ' '), ...messages);
   }
 
   public static error(...message: any[]) {

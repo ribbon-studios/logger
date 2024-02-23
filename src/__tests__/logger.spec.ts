@@ -1,6 +1,6 @@
 import { Chance } from 'chance';
-import { LEVEL_CHALK, LogLevel, Logger } from '../index';
-import { stringify } from '../utils/stringify';
+import { LEVEL_CHALK, LogLevel, Logger, MAX_LENGTH } from '../index';
+import { sanitizeMessages } from '../utils/messages';
 
 const chance = new Chance();
 
@@ -8,14 +8,23 @@ describe('util(Logger)', () => {
   let log: jest.SpyInstance<void, [message?: unknown, ...optionalParams: unknown[]], unknown>;
 
   beforeEach(() => {
-    log = jest.spyOn(console, 'log');
+    log = jest.spyOn(console, 'log').mockReturnValue(null);
 
     Logger.setLevel(LogLevel.SILLY);
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    jest.restoreAllMocks();
   });
+
+  function validate(level: LogLevel, ...messages: any[]): void {
+    const chalk = LEVEL_CHALK[level];
+
+    expect(log).toHaveBeenCalledWith(
+      chalk(`[${LogLevel[level].toLowerCase()}]:`).padEnd(MAX_LENGTH, ' '),
+      ...sanitizeMessages(messages).map((message) => (message instanceof Error ? message : chalk(message)))
+    );
+  }
 
   describe('func(log)', () => {
     it('should output a console log given the log level', () => {
@@ -23,7 +32,7 @@ describe('util(Logger)', () => {
 
       Logger.log(LogLevel.INFO, expectedMessage);
 
-      expect(log).toHaveBeenCalledWith(LEVEL_CHALK[LogLevel.INFO](`[info]:  ${expectedMessage}`));
+      validate(LogLevel.INFO, expectedMessage);
     });
 
     it('should support objects', () => {
@@ -31,7 +40,15 @@ describe('util(Logger)', () => {
 
       Logger.log(LogLevel.INFO, expectedObject);
 
-      expect(log).toHaveBeenCalledWith(LEVEL_CHALK[LogLevel.INFO](`[info]:  ${stringify(expectedObject)}`));
+      validate(LogLevel.INFO, expectedObject);
+    });
+
+    it('should support errors', () => {
+      const expectedError = new Error('Oops!');
+
+      Logger.log(LogLevel.INFO, expectedError);
+
+      validate(LogLevel.INFO, expectedError);
     });
 
     it('should not output a console log if the current log level is below the required level', () => {
@@ -43,43 +60,19 @@ describe('util(Logger)', () => {
     });
   });
 
-  describe('func(error)', () => {
-    it('should output a console log with the expected level', () => {
-      const expectedMessage = chance.word();
+  const levels = Object.values(LogLevel).filter((value) => !isNaN(Number(value))) as LogLevel[];
 
-      Logger.error(expectedMessage);
+  for (const level of levels) {
+    const name = LogLevel[level].toLowerCase();
 
-      expect(log).toHaveBeenCalledWith(LEVEL_CHALK[LogLevel.ERROR](`[error]: ${expectedMessage}`));
+    describe(`func(${name})`, () => {
+      it('should output a console log with the expected level', () => {
+        const expectedMessage = chance.word();
+
+        Logger[name](expectedMessage);
+
+        validate(level, expectedMessage);
+      });
     });
-  });
-
-  describe('func(warn)', () => {
-    it('should output a console log with the expected level', () => {
-      const expectedMessage = chance.word();
-
-      Logger.warn(expectedMessage);
-
-      expect(log).toHaveBeenCalledWith(LEVEL_CHALK[LogLevel.WARN](`[warn]:  ${expectedMessage}`));
-    });
-  });
-
-  describe('func(info)', () => {
-    it('should output a console log with the expected level', () => {
-      const expectedMessage = chance.word();
-
-      Logger.info(expectedMessage);
-
-      expect(log).toHaveBeenCalledWith(LEVEL_CHALK[LogLevel.INFO](`[info]:  ${expectedMessage}`));
-    });
-  });
-
-  describe('func(silly)', () => {
-    it('should output a console log with the expected level', () => {
-      const expectedMessage = chance.word();
-
-      Logger.silly(expectedMessage);
-
-      expect(log).toHaveBeenCalledWith(LEVEL_CHALK[LogLevel.SILLY](`[silly]: ${expectedMessage}`));
-    });
-  });
+  }
 });
