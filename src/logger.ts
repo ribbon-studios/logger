@@ -1,4 +1,4 @@
-import { Chalk, red, yellow, cyan, magenta } from 'chalk';
+import chalk, { ChalkInstance } from 'chalk';
 import { sanitizeMessages } from './utils/messages';
 
 export enum LogLevel {
@@ -14,12 +14,12 @@ export const MAX_LENGTH =
   }, 0) + 3;
 
 export const LEVEL_CHALK: {
-  [key in LogLevel]: Chalk;
+  [key in LogLevel]: ChalkInstance;
 } = {
-  [LogLevel.ERROR]: red,
-  [LogLevel.WARN]: yellow,
-  [LogLevel.INFO]: cyan,
-  [LogLevel.SILLY]: magenta,
+  [LogLevel.ERROR]: chalk.red,
+  [LogLevel.WARN]: chalk.yellow,
+  [LogLevel.INFO]: chalk.cyan,
+  [LogLevel.SILLY]: chalk.magenta,
 };
 
 /**
