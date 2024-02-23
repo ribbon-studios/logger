@@ -11,6 +11,19 @@
 
 A simple logger for all Rainbow Cafe Apps & Libraries
 
+### Usage
+
+```tsx
+import { Logger, LogLevel } from '@rain-cafe/logger';
+
+Logger.setLevel(LogLevel.INFO); // This is the default LogLevel
+
+Logger.silly('hello', 'world!'); // Outputs nothing since its lower then the configured level!
+Logger.info('hello', 'world!'); // '[info]:  hello world!'
+Logger.warn('hello', 'world!'); // '[warn]:  hello world!'
+Logger.error('hello', 'world!'); // '[error]: hello world!'
+```
+
 [npm-version-image]: https://img.shields.io/npm/v/@rain-cafe/logger.svg
 [npm-downloads-image]: https://img.shields.io/npm/dm/@rain-cafe/logger.svg
 [npm-url]: https://npmjs.org/package/@rain-cafe/logger
