@@ -1,5 +1,5 @@
 {
-  "name": "@rain-cafe/logger",
+  "name": "@ribbon-studios/logger",
   "version": "1.0.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
@@ -34,7 +34,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rain-cafe/logger.git"
+    "url": "git+https://github.com/ribbon-studios/logger.git"
   },
   "license": "MIT"
 }
