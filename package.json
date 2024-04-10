@@ -1,6 +1,7 @@
 {
   "name": "@ribbon-studios/logger",
   "version": "1.0.0",
+  "description": "A simple logger for all Rainbow Cafe Apps & Libraries",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "umd:main": "dist/index.umd.js",
