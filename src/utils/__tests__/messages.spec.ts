@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { sanitizeMessages } from '../messages';
 import { stringify } from '../stringify';
 

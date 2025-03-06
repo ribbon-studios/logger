@@ -1,10 +1,21 @@
 {
   "compilerOptions": {
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "incremental": true,
     "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
-    "lib": ["ES2022"],
-    "module": "CommonJS",
-    "target": "ES2022"
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "experimentalDecorators": true
   },
-  "exclude": ["node_modules", "dist"]
+  "include": ["src", "demo"],
+  "exclude": ["node_modules"]
 }

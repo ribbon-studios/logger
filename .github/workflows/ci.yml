@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v1.1.1
+      - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
@@ -27,7 +27,7 @@ jobs:
     needs: [install]
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v1.1.1
+      - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
@@ -43,7 +43,7 @@ jobs:
     needs: [install]
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v1.1.1
+      - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
@@ -51,14 +51,12 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Coverage
-        run: bun test --coverage
+        run: bun run test:coverage
 
-      # TODO: Enable once LCOV is supported
-      # https://github.com/oven-sh/bun/issues/4015
-      # - name: Coveralls
-      #   uses: coverallsapp/github-action@master
-      #   with:
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
   build:
     name: Build
@@ -66,7 +64,7 @@ jobs:
     needs: [install]
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v1.1.1
+      - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
@@ -76,7 +74,7 @@ jobs:
       - name: Build
         run: bun run build
 
-      - uses: actions/upload-artifact@v4.3.0
+      - uses: actions/upload-artifact@v4
         with:
           name: build
           path: dist
@@ -87,11 +85,11 @@ jobs:
     needs: [lint, test, build]
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v1.1.1
+      - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
-      - uses: actions/download-artifact@v4.1.1
+      - uses: actions/download-artifact@v4
         with:
           name: build
           path: dist

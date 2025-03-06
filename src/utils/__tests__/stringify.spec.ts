@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { stringify } from '../stringify';
 import dedent from 'string-dedent';
 

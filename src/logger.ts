@@ -41,7 +41,7 @@ export class Logger {
    * Logger.isLevel(LogLevel.INFO);
    */
   public static isLevel(level?: LogLevel): boolean {
-    return Logger.#level >= level;
+    return level != undefined && Logger.#level >= level;
   }
 
   /**

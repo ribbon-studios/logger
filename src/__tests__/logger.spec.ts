@@ -1,3 +1,4 @@
+import { describe, it, expect, vi, MockInstance, beforeEach, afterEach } from 'vitest';
 import { Chance } from 'chance';
 import { LEVEL_CHALK, LogLevel, Logger, MAX_LENGTH } from '../index';
 import { sanitizeMessages } from '../utils/messages';
@@ -5,16 +6,16 @@ import { sanitizeMessages } from '../utils/messages';
 const chance = new Chance();
 
 describe('util(Logger)', () => {
-  let log: jest.SpyInstance<void, [message?: unknown, ...optionalParams: unknown[]], unknown>;
+  let log: MockInstance<typeof console.log>;
 
   beforeEach(() => {
-    log = jest.spyOn(console, 'log').mockReturnValue(null);
+    log = vi.spyOn(console, 'log').mockReturnValue();
 
     Logger.setLevel(LogLevel.SILLY);
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   function validate(level: LogLevel, ...messages: any[]): void {
@@ -60,19 +61,43 @@ describe('util(Logger)', () => {
     });
   });
 
-  const levels = Object.values(LogLevel).filter((value) => !isNaN(Number(value))) as LogLevel[];
+  describe(`func(silly)`, () => {
+    it('should output a console log with the expected level', () => {
+      const expectedMessage = chance.word();
 
-  for (const level of levels) {
-    const name = LogLevel[level].toLowerCase();
+      Logger.silly(expectedMessage);
 
-    describe(`func(${name})`, () => {
-      it('should output a console log with the expected level', () => {
-        const expectedMessage = chance.word();
-
-        Logger[name](expectedMessage);
-
-        validate(level, expectedMessage);
-      });
+      validate(LogLevel.SILLY, expectedMessage);
     });
-  }
+  });
+
+  describe(`func(info)`, () => {
+    it('should output a console log with the expected level', () => {
+      const expectedMessage = chance.word();
+
+      Logger.info(expectedMessage);
+
+      validate(LogLevel.INFO, expectedMessage);
+    });
+  });
+
+  describe(`func(warn)`, () => {
+    it('should output a console log with the expected level', () => {
+      const expectedMessage = chance.word();
+
+      Logger.warn(expectedMessage);
+
+      validate(LogLevel.WARN, expectedMessage);
+    });
+  });
+
+  describe(`func(error)`, () => {
+    it('should output a console log with the expected level', () => {
+      const expectedMessage = chance.word();
+
+      Logger.error(expectedMessage);
+
+      validate(LogLevel.ERROR, expectedMessage);
+    });
+  });
 });
