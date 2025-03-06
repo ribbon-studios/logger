@@ -2,7 +2,7 @@
   "name": "@ribbon-studios/logger",
   "version": "1.0.0",
   "type": "module",
-  "description": "A simple logger for all Rainbow Cafe Apps & Libraries",
+  "description": "A simple logger for all Ribbon Studios Apps & Libraries",
   "source": "src/index.ts",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
