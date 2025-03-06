@@ -9,7 +9,7 @@
 [![Semantic Release][semantic-release-image]][semantic-release-url]
 [![Code Style: Prettier][code-style-image]][code-style-url]
 
-A simple logger for all Rainbow Cafe Apps & Libraries
+A simple logger for all Ribbon Studios Apps & Libraries
 
 ### Usage
 
