@@ -25,8 +25,31 @@ export const LEVEL_CHALK: {
 /**
  * A simple wrapper around 'console.log'
  */
-export class Logger {
-  static #level: LogLevel = LogLevel.INFO;
+export class RibbonLogger {
+  #options: RibbonLogger.Options;
+  readonly prefix?: string;
+
+  /**
+   * @param scope prefixes the messages with the given scope
+   */
+  constructor(scope?: string);
+  constructor(options?: Partial<RibbonLogger.Options>);
+  constructor(options?: string | Partial<RibbonLogger.Options>) {
+    this.#options = {
+      level: LogLevel.INFO,
+      ...(typeof options === 'string' ? { scope: options } : options),
+    };
+
+    if (this.#options.scope) {
+      const color = chalk.rgb(
+        Math.floor(Math.random() * 255),
+        Math.floor(Math.random() * 255),
+        Math.floor(Math.random() * 255)
+      );
+
+      this.prefix = color(`[${this.#options.scope}]`);
+    }
+  }
 
   /**
    * Returns whether the logger is configured to allow the given log level to output.
@@ -40,8 +63,8 @@ export class Logger {
    * // Also returns true
    * Logger.isLevel(LogLevel.INFO);
    */
-  public static isLevel(level?: LogLevel): boolean {
-    return level != undefined && Logger.#level >= level;
+  public isLevel(level?: LogLevel): boolean {
+    return level != undefined && this.#options.level >= level;
   }
 
   /**
@@ -49,16 +72,16 @@ export class Logger {
    * @param level the level to validate
    * @returns true if the given level is lower priority then the configured level
    */
-  public static isNotLevel(level?: LogLevel): boolean {
-    return !Logger.isLevel(level);
+  public isNotLevel(level?: LogLevel): boolean {
+    return !this.isLevel(level);
   }
 
   /**
    * Sets the level to allow to output
    * @param level the level to set
    */
-  public static setLevel(level: LogLevel) {
-    Logger.#level = level;
+  public setLevel(level: LogLevel) {
+    this.#options.level = level;
   }
 
   /**
@@ -66,8 +89,8 @@ export class Logger {
    * @param level the LogLevel of this message
    * @param rawMessages the messages to send
    */
-  public static log(level: LogLevel, ...rawMessages: any[]): void {
-    if (Logger.isNotLevel(level)) return;
+  public log(level: LogLevel, ...rawMessages: any[]): void {
+    if (this.isNotLevel(level)) return;
 
     const chalk = LEVEL_CHALK[level];
 
@@ -75,38 +98,51 @@ export class Logger {
       message instanceof Error ? message : chalk(message)
     );
 
-    console.log(chalk(`[${LogLevel[level].toLowerCase()}]:`).padEnd(MAX_LENGTH, ' '), ...messages);
+    const prefix = [this.prefix, chalk(`[${LogLevel[level].toLowerCase()}]:`).padEnd(MAX_LENGTH, ' ')]
+      .filter(Boolean)
+      .join('');
+
+    console.log(prefix, ...messages);
   }
 
   /**
    * A helper that automatically calls {@link Logger.log} with {@link LogLevel.ERROR}
    * @param messages the messages to send
    */
-  public static error(...messages: any[]) {
-    Logger.log(LogLevel.ERROR, ...messages);
+  public error(...messages: any[]) {
+    this.log(LogLevel.ERROR, ...messages);
   }
 
   /**
    * A helper that automatically calls {@link Logger.log} with {@link LogLevel.WARN}
    * @param messages the messages to send
    */
-  public static warn(...messages: any[]) {
-    Logger.log(LogLevel.WARN, ...messages);
+  public warn(...messages: any[]) {
+    this.log(LogLevel.WARN, ...messages);
   }
 
   /**
    * A helper that automatically calls {@link Logger.log} with {@link LogLevel.INFO}
    * @param messages the messages to send
    */
-  public static info(...messages: any[]) {
-    Logger.log(LogLevel.INFO, ...messages);
+  public info(...messages: any[]) {
+    this.log(LogLevel.INFO, ...messages);
   }
 
   /**
    * A helper that automatically calls {@link Logger.log} with {@link LogLevel.SILLY}
    * @param messages the messages to send
    */
-  public static silly(...messages: any[]) {
-    Logger.log(LogLevel.SILLY, ...messages);
+  public silly(...messages: any[]) {
+    this.log(LogLevel.SILLY, ...messages);
   }
 }
+
+export namespace RibbonLogger {
+  export type Options = {
+    scope?: string;
+    level: LogLevel;
+  };
+}
+
+export const logger = new RibbonLogger();

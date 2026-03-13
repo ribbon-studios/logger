@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, MockInstance, beforeEach, afterEach } from 'vitest';
 import { Chance } from 'chance';
-import { LEVEL_CHALK, LogLevel, Logger, MAX_LENGTH } from '../index';
+import { LEVEL_CHALK, LogLevel, logger, MAX_LENGTH, RibbonLogger } from '../index';
 import { sanitizeMessages } from '../utils/messages';
 
 const chance = new Chance();
@@ -11,7 +11,7 @@ describe('util(Logger)', () => {
   beforeEach(() => {
     log = vi.spyOn(console, 'log').mockReturnValue();
 
-    Logger.setLevel(LogLevel.SILLY);
+    logger.setLevel(LogLevel.SILLY);
   });
 
   afterEach(() => {
@@ -27,11 +27,38 @@ describe('util(Logger)', () => {
     );
   }
 
+  describe('constructor(RibbonLogger)', () => {
+    it('should support custom loggers', () => {
+      const expectedString = 'hello world';
+
+      const logger = new RibbonLogger();
+
+      logger.log(LogLevel.INFO, expectedString);
+
+      validate(LogLevel.INFO, expectedString);
+    });
+
+    it('should support scopes', () => {
+      const expectedString = 'hello world';
+
+      const logger = new RibbonLogger('scope');
+
+      logger.info(expectedString);
+
+      const chalk = LEVEL_CHALK[LogLevel.INFO];
+
+      expect(log).toHaveBeenCalledWith(
+        [logger.prefix, chalk(`[${LogLevel[LogLevel.INFO].toLowerCase()}]:`).padEnd(MAX_LENGTH, ' ')].join(''),
+        expectedString
+      );
+    });
+  });
+
   describe('func(log)', () => {
     it('should output a console log given the log level', () => {
       const expectedMessage = chance.word();
 
-      Logger.log(LogLevel.INFO, expectedMessage);
+      logger.log(LogLevel.INFO, expectedMessage);
 
       validate(LogLevel.INFO, expectedMessage);
     });
@@ -39,7 +66,7 @@ describe('util(Logger)', () => {
     it('should support objects', () => {
       const expectedObject = { hello: 'world' };
 
-      Logger.log(LogLevel.INFO, expectedObject);
+      logger.log(LogLevel.INFO, expectedObject);
 
       validate(LogLevel.INFO, expectedObject);
     });
@@ -47,15 +74,15 @@ describe('util(Logger)', () => {
     it('should support errors', () => {
       const expectedError = new Error('Oops!');
 
-      Logger.log(LogLevel.INFO, expectedError);
+      logger.log(LogLevel.INFO, expectedError);
 
       validate(LogLevel.INFO, expectedError);
     });
 
     it('should not output a console log if the current log level is below the required level', () => {
-      Logger.setLevel(LogLevel.ERROR);
+      logger.setLevel(LogLevel.ERROR);
 
-      Logger.log(LogLevel.INFO, chance.word());
+      logger.log(LogLevel.INFO, chance.word());
 
       expect(log).not.toHaveBeenCalled();
     });
@@ -65,7 +92,7 @@ describe('util(Logger)', () => {
     it('should output a console log with the expected level', () => {
       const expectedMessage = chance.word();
 
-      Logger.silly(expectedMessage);
+      logger.silly(expectedMessage);
 
       validate(LogLevel.SILLY, expectedMessage);
     });
@@ -75,7 +102,7 @@ describe('util(Logger)', () => {
     it('should output a console log with the expected level', () => {
       const expectedMessage = chance.word();
 
-      Logger.info(expectedMessage);
+      logger.info(expectedMessage);
 
       validate(LogLevel.INFO, expectedMessage);
     });
@@ -85,7 +112,7 @@ describe('util(Logger)', () => {
     it('should output a console log with the expected level', () => {
       const expectedMessage = chance.word();
 
-      Logger.warn(expectedMessage);
+      logger.warn(expectedMessage);
 
       validate(LogLevel.WARN, expectedMessage);
     });
@@ -95,7 +122,7 @@ describe('util(Logger)', () => {
     it('should output a console log with the expected level', () => {
       const expectedMessage = chance.word();
 
-      Logger.error(expectedMessage);
+      logger.error(expectedMessage);
 
       validate(LogLevel.ERROR, expectedMessage);
     });

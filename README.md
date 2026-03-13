@@ -14,14 +14,14 @@ A simple logger for all Ribbon Studios Apps & Libraries
 ### Usage
 
 ```ts
-import { Logger, LogLevel } from '@ribbon-studios/logger';
+import { logger, LogLevel } from '@ribbon-studios/logger';
 
-Logger.setLevel(LogLevel.INFO); // This is the default LogLevel
+logger.setLevel(LogLevel.INFO); // This is the default LogLevel
 
-Logger.silly('hello', 'world!'); // Outputs nothing since its lower then the configured level!
-Logger.info('hello', 'world!'); // '[info]:  hello world!'
-Logger.warn('hello', 'world!'); // '[warn]:  hello world!'
-Logger.error('hello', 'world!'); // '[error]: hello world!'
+logger.silly('hello', 'world!');  // Outputs nothing since its lower then the configured level!
+logger.info('hello', 'world!');   // '[info]:  hello world!'
+logger.warn('hello', 'world!');   // '[warn]:  hello world!'
+logger.error('hello', 'world!');  // '[error]: hello world!'
 ```
 
 [npm-version-image]: https://img.shields.io/npm/v/@ribbon-studios/logger.svg
