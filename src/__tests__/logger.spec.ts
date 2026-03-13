@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, MockInstance, beforeEach, afterEach } from 'vitest';
 import { Chance } from 'chance';
-import { LEVEL_CHALK, LogLevel, logger, MAX_LENGTH, RibbonLogger } from '../index';
+import { LEVEL_CHALK, LogLevel, logger, RibbonLogger, MAX_LENGTH } from '../index';
 import { sanitizeMessages } from '../utils/messages';
 
 const chance = new Chance();
@@ -22,7 +22,7 @@ describe('util(Logger)', () => {
     const chalk = LEVEL_CHALK[level];
 
     expect(log).toHaveBeenCalledWith(
-      chalk(`[${LogLevel[level].toLowerCase()}]:`).padEnd(MAX_LENGTH, ' '),
+      [chalk(`[${LogLevel[level].toLowerCase()}]`.padStart(MAX_LENGTH, ' ')), ':'].join(''),
       ...sanitizeMessages(messages).map((message) => (message instanceof Error ? message : chalk(message)))
     );
   }
@@ -48,7 +48,7 @@ describe('util(Logger)', () => {
       const chalk = LEVEL_CHALK[LogLevel.INFO];
 
       expect(log).toHaveBeenCalledWith(
-        [logger.prefix, chalk(`[${LogLevel[LogLevel.INFO].toLowerCase()}]:`).padEnd(MAX_LENGTH, ' ')].join(''),
+        [chalk(`[${LogLevel[LogLevel.INFO].toLowerCase()}]`.padStart(MAX_LENGTH, ' ')), logger.prefix, ':'].join(''),
         expectedString
       );
     });

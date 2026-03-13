@@ -1,5 +1,6 @@
 import chalk, { ChalkInstance } from 'chalk';
 import { sanitizeMessages } from './utils/messages';
+import { random } from './utils/random';
 
 export enum LogLevel {
   ERROR,
@@ -11,7 +12,7 @@ export enum LogLevel {
 export const MAX_LENGTH =
   Object.keys(LogLevel).reduce((output, value) => {
     return Math.max(output, value.length);
-  }, 0) + 3;
+  }, 0) + 2;
 
 export const LEVEL_CHALK: {
   [key in LogLevel]: ChalkInstance;
@@ -42,9 +43,9 @@ export class RibbonLogger {
 
     if (this.#options.scope) {
       const color = chalk.rgb(
-        Math.floor(Math.random() * 255),
-        Math.floor(Math.random() * 255),
-        Math.floor(Math.random() * 255)
+        random(`${this.#options.scope}:r`, 0, 255),
+        random(`${this.#options.scope}:g`, 0, 255),
+        random(`${this.#options.scope}:b`, 0, 255)
       );
 
       this.prefix = color(`[${this.#options.scope}]`);
@@ -98,7 +99,7 @@ export class RibbonLogger {
       message instanceof Error ? message : chalk(message)
     );
 
-    const prefix = [this.prefix, chalk(`[${LogLevel[level].toLowerCase()}]:`).padEnd(MAX_LENGTH, ' ')]
+    const prefix = [chalk(`[${LogLevel[level].toLowerCase()}]`.padStart(MAX_LENGTH, ' ')), this.prefix, ':']
       .filter(Boolean)
       .join('');
 
